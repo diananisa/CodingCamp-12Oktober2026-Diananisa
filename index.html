@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Life Dashboard</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+
+    <!-- Global storage-error warning banner (hidden by default) -->
+    <div
+      id="warning-banner"
+      class="warning-banner"
+      role="alert"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      <span id="warning-banner-message" class="warning-banner__message"></span>
+      <button
+        id="warning-banner-dismiss"
+        class="warning-banner__dismiss"
+        aria-label="Dismiss warning"
+        type="button"
+      >✕</button>
+    </div>
+
+    <main class="dashboard-grid">
+      
+      <button type="button" id="theme-toggle" aria-pressed="false">
+        🌙 Dark Mode
+      </button>
+      
+      
+      <!-- Greeting Widget -->
+      <section id="greeting-section" class="widget" aria-label="Greeting">
+        <h2 class="widget__title visually-hidden">Greeting</h2>
+        <div id="greeting-time"   class="greeting__time"    aria-live="polite" aria-atomic="true"></div>
+        <div id="greeting-date"   class="greeting__date"    aria-live="polite" aria-atomic="true"></div>
+        <div id="greeting-text"   class="greeting__message" aria-live="polite" aria-atomic="true"></div>
+        <div class="name-settings">
+          <label for="custom-name">Your name</label>
+          <input
+            type="text"
+            id="custom-name"
+            placeholder="Enter your name"
+            maxlength="30"
+          />
+          <button id="save-name" type="button">Save Name</button>
+        </div>
+      </section>
+
+      <!-- Focus Timer Widget -->
+      <section id="timer-section" class="widget" aria-label="Focus Timer">
+        <h2 class="widget__title">Focus Timer</h2>
+        <div id="timer-mode" class="timer__mode" data-mode="focus" aria-live="polite">Focus</div>
+        <div
+          id="timer-display"
+          class="timer__display"
+          role="timer"
+          aria-live="off"
+          aria-label="Remaining time"
+        >25:00</div>
+        <div id="timer-message" class="timer__message" aria-live="assertive" aria-atomic="true" hidden></div>
+        <div class="timer__controls">
+          <button id="timer-start" type="button" class="btn btn--primary" aria-label="Start timer">Start</button>
+          <button id="timer-stop"  type="button" class="btn btn--secondary" aria-label="Stop timer" disabled>Stop</button>
+          <button id="timer-reset" type="button" class="btn btn--secondary" aria-label="Reset timer">Reset</button>
+        </div>
+        <div class="pomodoro-settings">
+          <label for="focus-time">Focus (minutes)</label>
+          <input type="number" id="focus-time" min="1" max="120" value="25" />
+
+          <label for="break-time">Break (minutes)</label>
+          <input type="number" id="break-time" min="1" max="60" value="5" />
+
+          <button id="save-pomodoro" type="button">Save Timer</button>
+        </div>
+      </section>
+
+      <!-- To-Do List Widget -->
+      <section id="todo-section" class="widget" aria-label="To-Do List">
+        <h2 class="widget__title">To-Do List</h2>
+        <form id="todo-form" class="todo__form" novalidate>
+          <label for="todo-input" class="visually-hidden">New task description</label>
+          <input
+            id="todo-input"
+            type="text"
+            class="todo__input"
+            placeholder="Add a new task…"
+            maxlength="500"
+            autocomplete="off"
+            aria-describedby="todo-input-error"
+          />
+          <button type="submit" class="btn btn--primary" aria-label="Add task">Add</button>
+        </form>
+        <p id="todo-input-error" class="field-error" role="alert" aria-live="polite" hidden></p>
+        <ul
+          id="todo-list"
+          class="todo__list"
+          role="list"
+          aria-label="Task list"
+          aria-live="polite"
+        ></ul>
+      </section>
+
+      <!-- Quick Links Widget -->
+      <section id="links-section" class="widget" aria-label="Quick Links">
+        <h2 class="widget__title">Quick Links</h2>
+        <form id="links-form" class="links__form" novalidate>
+          <label for="link-label-input" class="visually-hidden">Link label</label>
+          <input
+            id="link-label-input"
+            type="text"
+            class="links__input"
+            placeholder="Label (max 50 chars)"
+            maxlength="50"
+            autocomplete="off"
+            aria-describedby="links-form-error"
+          />
+          <label for="link-url-input" class="visually-hidden">Link URL</label>
+          <input
+            id="link-url-input"
+            type="url"
+            class="links__input"
+            placeholder="https://example.com"
+            maxlength="2048"
+            autocomplete="off"
+            aria-describedby="links-form-error"
+          />
+          <button type="submit" class="btn btn--primary" aria-label="Add link">Add</button>
+        </form>
+        <p id="links-form-error" class="field-error" role="alert" aria-live="polite" hidden></p>
+        <div
+          id="links-grid"
+          class="links__grid"
+          role="list"
+          aria-label="Saved links"
+          aria-live="polite"
+        ></div>
+      </section>
+
+    </main>
+
+    <script src="js/app.js" defer></script>
+  </body>
+</html>

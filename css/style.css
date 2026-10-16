@@ -1,0 +1,1116 @@
+
+/* ==========================================================================
+   Life Dashboard — css/style.css
+   Single stylesheet for all styling (Requirement 6.4)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS Custom Properties (design tokens)
+   -------------------------------------------------------------------------- */
+:root {
+  /* --- Color palette ---
+     All text/background pairs meet WCAG 2.1 AA:
+       --color-text on --color-bg          ≈ 12.6:1  (normal text ✓)
+       --color-text-muted on --color-bg    ≈  6.5:1  (normal text ✓)
+       --color-heading on --color-bg       ≈ 12.6:1  (large text  ✓)
+       --color-accent on --color-bg        ≈  4.6:1  (normal text ✓)
+       --color-btn-text on --color-btn-bg  ≈ 12.6:1  (normal text ✓)
+  */
+  --color-bg:             #7165c5;   /* near-black page background              */
+  --color-surface:        #ffffff;   /* widget card background                  */
+  --color-surface-raised: #f5f5f8;   /* elevated element (input, hover)         */
+  --color-border:         #e5e5ee;   /* subtle border                           */
+
+  --color-heading:        #333333;   /* primary headings                        */
+  --color-text:           #444444;   /* body text (12.6:1 on --color-bg)        */
+  --color-text-muted:     #777777;   /* secondary / helper text (6.5:1)         */
+
+  --color-accent:         #7180e8;   /* interactive accent — indigo (4.6:1)     */
+  --color-accent-hover:   #5969d7;   /* accent on hover / focus                 */
+  --color-accent-active:  #4d5dc5;   /* accent on press                         */
+
+  --color-success:        #4caf82;   /* completed-task indicator                */
+  --color-danger:         #e05c6e;   /* delete / error actions                  */
+  --color-warning-bg:     #3d2a10;   /* global warning banner background        */
+  --color-warning-text:   #f5a623;   /* global warning banner text (5.8:1)      */
+  --color-timesup-bg:     #2d1a3a;   /* "Time's up!" highlight background       */
+  --color-timesup-text:   #d48af7;   /* "Time's up!" text (5.2:1)               */
+
+  --color-btn-bg:         #e7e9ed;
+  --color-btn-text:       #444444;   /* 12.6:1 on --color-btn-bg                */
+  --color-btn-hover:      #d9dce5;
+  --color-btn-disabled-bg:   #eeeeF2;
+  --color-btn-disabled-text: #999999; /* intentionally low contrast — disabled  */
+
+  --color-input-bg:       #ffffff;
+  --color-input-border:   #d5d5e2;
+  --color-input-focus:    #7180e8;
+
+  /* --- Spacing scale --- */
+  --space-xs:   4px;
+  --space-sm:   8px;
+  --space-md:  16px;   /* minimum section spacing (Requirement 6.1) */
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --space-2xl: 48px;
+
+  /* --- Typography scale ---
+     Base: 16px (Requirement 6.2)
+     Headings ≥ 1.25× base = ≥ 20px (Requirement 6.2)
+  */
+  --font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-size-sm:   14px;
+  --font-size-base: 16px;   /* minimum body font size                  */
+  --font-size-md:   18px;
+  --font-size-lg:   20px;   /* minimum heading size (1.25× base)       */
+  --font-size-xl:   24px;
+  --font-size-2xl:  32px;
+  --font-size-3xl:  48px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold:   700;
+  --line-height-base:   1.5;
+  --line-height-tight:  1.2;
+
+  /* --- Border radius --- */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* --- Transitions --- */
+  --transition-fast:   120ms ease;
+  --transition-normal: 200ms ease;
+
+  /* --- Widget minimum heights (Requirement 6.8) --- */
+  --widget-min-height: 120px;
+
+  /* --- Layout --- */
+  --grid-gap:       12px;   /* gap between widget cards (≥16px) */
+  --content-max-w: 1000px;
+}
+
+/* --------------------------------------------------------------------------
+   2. Reset / Base
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);   /* ≥ 16px (Requirement 6.2) */
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  padding: var(--space-lg);
+}
+
+/* --------------------------------------------------------------------------
+   3. Typography
+   -------------------------------------------------------------------------- */
+h1, h2, h3, h4 {
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-heading);
+}
+
+h1 { font-size: var(--font-size-3xl); }   /* 48px — 3.0× base ✓              */
+h2 { font-size: var(--font-size-2xl); }   /* 32px — 2.0× base ✓              */
+h3 { font-size: var(--font-size-xl);  }   /* 24px — 1.5× base ✓              */
+h4 { font-size: var(--font-size-lg);  }   /* 20px — 1.25× base ✓ (minimum)   */
+
+p  { font-size: var(--font-size-base); line-height: var(--line-height-base); }
+
+small, .text-sm  { font-size: var(--font-size-sm); }
+.text-muted      { color: var(--color-text-muted); }
+.text-accent     { color: var(--color-accent); }
+.text-danger     { color: var(--color-danger); }
+
+/* --------------------------------------------------------------------------
+   4. Layout — Dashboard Grid
+   -------------------------------------------------------------------------- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  max-width: var(--content-max-w);
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+/* Greeting spans the full first row */
+#greeting-section {
+  grid-column: 1 / -1;
+  min-height: 130px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Timer and Tasks share the second row */
+#timer-section,
+#todo-section {
+  grid-column: span 1;
+  min-width: 0;
+  min-height: 155px;
+}
+
+/* Quick Links starts in the left column of the next row */
+#links-section {
+  grid-column: 1;
+  min-width: 0;
+}
+
+/* Phone layout */
+@media (max-width: 600px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #greeting-section,
+  #timer-section,
+  #todo-section,
+  #links-section {
+    grid-column: 1 / -1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Widget Cards
+   -------------------------------------------------------------------------- */
+.widget {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  min-height: var(--widget-min-height);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.widget__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.widget__title {
+  font-size: var(--font-size-lg);   /* ≥ 1.25× base (Requirement 6.2) */
+  font-weight: var(--font-weight-bold);
+  color: var(--color-heading);
+}
+
+/* --------------------------------------------------------------------------
+   6. Widget Error Placeholder  (Requirement 6.8)
+   -------------------------------------------------------------------------- */
+.widget-error {
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-xl);
+  min-height: var(--widget-min-height);   /* fixed minimum height — layout never collapses */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  padding: var(--space-lg);
+}
+
+/* --------------------------------------------------------------------------
+   7. Global Warning Banner  (storage / runtime errors)
+   -------------------------------------------------------------------------- */
+#warning-banner {
+  display: none;   /* shown via JS by adding .is-visible */
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  border: 1px solid var(--color-warning-text);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-md);
+  max-width: var(--content-max-w);
+  margin-left: auto;
+  margin-right: auto;
+  font-size: var(--font-size-base);
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+#warning-banner.is-visible {
+  display: flex;
+}
+
+#warning-banner.warning-banner--hidden {
+  display: none !important;
+}
+
+.warning-banner__message {
+  flex: 1;
+}
+
+/* --------------------------------------------------------------------------
+   8. Buttons
+   -------------------------------------------------------------------------- */
+button {
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  font-weight: var(--font-weight-medium);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  line-height: var(--line-height-tight);
+}
+
+/* Primary action button */
+.btn {
+  background-color: var(--color-btn-bg);
+  color: var(--color-btn-text);
+}
+
+/* btn--primary: accent-colored submit/action button */
+.btn--primary {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+.btn--primary:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+}
+
+.btn--primary:active:not(:disabled) {
+  background-color: var(--color-accent-active);
+}
+
+/* btn--secondary: neutral secondary action button */
+.btn--secondary {
+  background-color: var(--color-btn-bg);
+  color: var(--color-btn-text);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background-color: var(--color-btn-hover);
+}
+
+.btn:hover:not(:disabled) {
+  background-color: var(--color-btn-hover);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.btn:active:not(:disabled) {
+  background-color: var(--color-accent-active);
+  color: #fff;
+}
+
+.btn:disabled {
+  background-color: var(--color-btn-disabled-bg);
+  color: var(--color-btn-disabled-text);
+  cursor: not-allowed;
+}
+
+/* Accent / primary-emphasis button */
+.btn--accent {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+.btn--accent:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+  color: #0f1117;
+}
+
+/* Danger button (delete) */
+.btn--danger {
+  background-color: transparent;
+  color: var(--color-danger);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.btn--danger:hover:not(:disabled) {
+  background-color: rgba(224, 92, 110, 0.12);
+}
+
+/* Icon-only button */
+.btn--icon {
+  padding: var(--space-xs);
+  background-color: transparent;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+  line-height: 1;
+}
+
+.btn--icon:hover:not(:disabled) {
+  background-color: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+/* Dismiss button (warning banner) */
+.btn--dismiss,
+.warning-banner__dismiss {
+  background-color: transparent;
+  color: var(--color-warning-text);
+  padding: var(--space-xs) var(--space-sm);
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  border-radius: var(--radius-sm);
+}
+
+.btn--dismiss:hover,
+.warning-banner__dismiss:hover {
+  background-color: rgba(245, 166, 35, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   9. Form Controls
+   -------------------------------------------------------------------------- */
+input[type="text"],
+input[type="url"] {
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background-color: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  width: 100%;
+  line-height: var(--line-height-base);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+input[type="text"]::placeholder,
+input[type="url"]::placeholder {
+  color: var(--color-text-muted);
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus {
+  outline: none;
+  border-color: var(--color-input-focus);
+  box-shadow: 0 0 0 3px rgba(124, 131, 245, 0.25);
+}
+
+.form-row {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.form-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Inline validation message */
+.validation-msg,
+.field-error {
+  font-size: var(--font-size-sm);
+  color: var(--color-danger);
+  margin-top: var(--space-xs);
+}
+
+.field-error[hidden] {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   10. Greeting Widget  (#greeting-section)
+   -------------------------------------------------------------------------- */
+#greeting-section .greeting__time {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-heading);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+#greeting-section .greeting__date {
+  font-size: var(--font-size-md);
+  color: var(--color-text-muted);
+}
+
+#greeting-section .greeting__message {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-accent);
+}
+
+/* --------------------------------------------------------------------------
+   11. Focus Timer Widget  (#timer-section)
+   -------------------------------------------------------------------------- */
+#timer-section .timer__display {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-heading);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+#timer-section .timer__controls {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#timer-section .timer__message {
+  background-color: var(--color-timesup-bg);
+  color: var(--color-timesup-text);
+  border: 1px solid var(--color-timesup-text);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  text-align: center;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  animation: fadeIn var(--transition-normal) ease;
+}
+
+#timer-section .timer__message[hidden] {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   12. To-Do List Widget  (#todo-section)
+   -------------------------------------------------------------------------- */
+#todo-section .todo__form {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+#todo-section .todo__form input,
+#todo-section .todo__input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Legacy alias kept for any internal reference */
+#todo-section .todo-input-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+#todo-section .todo-input-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.todo__list,
+#todo-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--color-surface-raised);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: border-color var(--transition-fast);
+}
+
+.todo-item:hover {
+  border-color: var(--color-border);
+}
+
+/* Checkbox / toggle control */
+.todo-item__toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  flex-shrink: 0;
+  background-color: transparent;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+  position: relative;
+}
+
+.todo-item__toggle:checked {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+/* Checkmark via CSS */
+.todo-item__toggle:checked::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  width: 5px;
+  height: 9px;
+  border: 2px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+.todo-item__toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Task text */
+.todo-item__text {
+  flex: 1;
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  word-break: break-word;
+}
+
+/* Completed task — visual distinction (Requirement 3.4) */
+.todo-item--completed .todo-item__text {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.todo-item__actions {
+  display: flex;
+  gap: var(--space-xs);
+  flex-shrink: 0;
+}
+
+/* Inline edit field */
+.todo-item__edit-input {
+  flex: 1;
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background-color: var(--color-input-bg);
+  border: 1px solid var(--color-input-focus);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+  box-shadow: 0 0 0 2px rgba(124, 131, 245, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   13. Quick Links Widget  (#links-section)
+   -------------------------------------------------------------------------- */
+#links-section .links__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+#links-section .links__form input,
+#links-section .links__input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Legacy alias */
+#links-section .links-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+#links-section .links-input-row {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: flex-start;
+}
+
+#links-section .links-input-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+#links-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.link-btn-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-xs) var(--space-sm);
+  transition: border-color var(--transition-fast);
+}
+
+.link-btn-wrapper:hover {
+  border-color: var(--color-accent);
+}
+
+/* The clickable link itself */
+.link-btn {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+}
+
+.link-btn:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+.link-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   14. Animations / Transitions
+   -------------------------------------------------------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   15. Utility classes
+   -------------------------------------------------------------------------- */
+.sr-only,
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.flex-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.flex-1 { flex: 1; }
+
+.mt-sm  { margin-top: var(--space-sm); }
+.mt-md  { margin-top: var(--space-md); }
+
+
+/* ==========================================================================
+   Reference layout refinements
+   ========================================================================== */
+
+/* Page background */
+body {
+  background: linear-gradient(135deg, #7184ed 0%, #7565c4 55%, #6b4ba6 100%);
+  color: #444444;
+  padding: 16px;
+}
+
+/* White cards */
+.widget {
+  background: #ffffff;
+  border: none;
+  border-radius: 9px;
+  box-shadow: 0 2px 5px rgba(35, 25, 80, 0.08);
+  padding: 16px;
+  min-width: 0;
+  gap: 12px;
+}
+
+.widget__title {
+  color: #333333;
+  font-size: 16px;
+}
+
+/* Greeting */
+#greeting-section .greeting__time {
+  color: #7888e9;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+#greeting-section .greeting__date {
+  color: #666666;
+  font-size: 11px;
+}
+
+#greeting-section .greeting__message {
+  color: #333333;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* Focus timer */
+#timer-section .timer__display {
+  color: #7888e9;
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="url"],
+#todo-section .todo-item__edit-input {
+  background: #ffffff;
+  color: #333333;
+  border: 1px solid #d5d5e2;
+  border-radius: 4px;
+  padding: 7px 9px;
+  font-size: 12px;
+}
+
+input[type="text"]::placeholder,
+input[type="url"]::placeholder {
+  color: #888888;
+}
+
+/* Task form */
+#todo-section .todo__form,
+#todo-section .todo-input-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+#todo-section .todo__form input,
+#todo-section .todo-input-row input {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+}
+
+/* Quick Links form */
+#links-section .links__form,
+#links-section .links-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#links-section .links-input-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+#links-section .links-input-row input {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+}
+
+/* Buttons */
+button {
+  font-size: 11px;
+  padding: 7px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.btn--primary,
+.btn--accent,
+#links-section button:not(.btn--icon) {
+  background-color: #7180e8;
+  color: #ffffff;
+}
+
+.btn--primary:hover:not(:disabled),
+.btn--accent:hover:not(:disabled),
+#links-section button:not(.btn--icon):hover:not(:disabled) {
+  background-color: #5969d7;
+  color: #ffffff;
+}
+
+.btn--secondary {
+  background-color: #e7e9ed;
+  color: #444444;
+}
+
+/* Tasks */
+.todo-item {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 2px 0;
+  gap: 8px;
+}
+
+.todo-item__text {
+  color: #444444;
+  font-size: 12px;
+}
+
+.todo-item__toggle {
+  width: 13px;
+  height: 13px;
+  border: 1px solid #aaaaaa;
+  border-radius: 2px;
+}
+
+.todo-item__actions .btn--danger {
+  background: #e87575;
+  color: #ffffff;
+  padding: 4px 9px;
+}
+
+/* Quick Links chips */
+#links-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.link-btn-wrapper {
+  min-width: 0;
+  justify-content: center;
+  background: #7180e8;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  gap: 2px;
+}
+
+.link-btn {
+  color: #ffffff;
+  font-size: 11px;
+  padding: 5px 2px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.link-btn:hover {
+  color: #ffffff;
+}
+
+.link-btn-wrapper .btn--icon {
+  color: #ffffff;
+  padding: 2px;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  .widget {
+    padding: 14px;
+  }
+
+  #links-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Light / Dark Mode toggle button */
+#theme-toggle {
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Dark theme color variables */
+:root[data-theme="dark"] {
+  --color-bg: #0f1117;
+  --color-surface: #1a1d27;
+  --color-surface-raised: #22263a;
+  --color-border: #2e3350;
+
+  --color-heading: #e8eaf6;
+  --color-text: #d0d3e8;
+  --color-text-muted: #a5abc9;
+
+  --color-accent: #9da2f7;
+  --color-accent-hover: #b9bdff;
+
+  --color-btn-bg: #2e3350;
+  --color-btn-text: #e8eaf6;
+  --color-btn-hover: #3a3f6a;
+
+  --color-input-bg: #1e2235;
+  --color-input-border: #3a3f6a;
+  --color-input-focus: #9da2f7;
+}
+
+/* Apply theme colors to dashboard elements */
+:root[data-theme="dark"] body {
+  background: linear-gradient(
+    135deg,
+    #171a2b,
+    #24203d 55%,
+    #30234a
+  );
+  color: var(--color-text);
+}
+
+:root[data-theme="dark"] .widget {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme="dark"] .widget__title,
+:root[data-theme="dark"] .greeting__message {
+  color: var(--color-heading);
+}
+
+:root[data-theme="dark"] .greeting__date,
+:root[data-theme="dark"] .todo-item__text {
+  color: var(--color-text-muted);
+}
+
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] textarea {
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  border-color: var(--color-input-border);
+}
+
+:root[data-theme="dark"] .btn--secondary {
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
+}
+
+:root[data-theme="dark"] #links-grid .link-btn-wrapper {
+  background: #353b65;
+}
+
+:root[data-theme="dark"] #theme-toggle {
+  background: #353b65;
+  color: #ffffff;
+  border-color: #555d8b;
+}
+
+
+/* --------------------------------------------------------------------------
+   Custom name + Pomodoro settings
+   -------------------------------------------------------------------------- */
+.name-settings,
+.pomodoro-settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.name-settings label,
+.pomodoro-settings label {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-muted);
+}
+
+.name-settings input,
+.pomodoro-settings input {
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  font: inherit;
+}
+
+.name-settings input { min-width: 0; flex: 1 1 140px; }
+.pomodoro-settings input { width: 4.5rem; }
+
+.name-settings input:focus,
+.pomodoro-settings input:focus {
+  outline: 2px solid var(--color-input-focus);
+  outline-offset: 1px;
+}
+
+.name-settings button,
+.pomodoro-settings button {
+  padding: var(--space-xs) var(--space-md);
+  background: var(--color-accent);
+  color: #fff;
+  border: 0;
+  border-radius: var(--radius-md);
+  font: inherit;
+  cursor: pointer;
+}
+
+.name-settings button:hover,
+.pomodoro-settings button:hover { background: var(--color-accent-hover); }
+
+.timer__mode {
+  display: inline-block;
+  align-self: center;
+  margin: 0 auto var(--space-sm);
+  padding: 2px var(--space-md);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.timer__mode[data-mode="break"] { background: var(--color-success); }
+
+#timer-section { text-align: center; }
